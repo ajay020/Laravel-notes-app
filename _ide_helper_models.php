@@ -1,16 +1,40 @@
 <?php
 
-namespace App\Models;
+// @formatter:off
+// phpcs:ignoreFile
+/**
+ * A helper file for your Eloquent Models
+ * Copy the phpDocs from this file to the correct Model,
+ * And remove them from this file, to prevent double declarations.
+ *
+ * @author Barry vd. Heuvel <barryvdh@gmail.com>
+ */
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Database\Factories\UserFactory;
-use Illuminate\Database\Eloquent\Attributes\Fillable;
-use Illuminate\Database\Eloquent\Attributes\Hidden;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
 
+namespace App\Models{
+/**
+ * @property int $id
+ * @property int $user_id
+ * @property string $title
+ * @property string $body
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\User $user
+ * @method static \Database\Factories\NoteFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Note newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Note newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Note query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Note whereBody($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Note whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Note whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Note whereTitle($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Note whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Note whereUserId($value)
+ */
+	class Note extends \Eloquent {}
+}
+
+namespace App\Models{
 /**
  * @property int $id
  * @property string $name
@@ -36,31 +60,7 @@ use Illuminate\Notifications\Notifiable;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User wherePassword($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereRememberToken($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereUpdatedAt($value)
- * @mixin \Eloquent
  */
-#[Fillable(['name', 'email', 'password'])]
-#[Hidden(['password', 'remember_token'])]
-class User extends Authenticatable
-{
-    /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable;
-
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
-    }
-
-
-    public function notes(): HasMany
-    {
-        return $this->hasMany(Note::class);
-    }
+	class User extends \Eloquent {}
 }
+

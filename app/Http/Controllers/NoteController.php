@@ -13,11 +13,21 @@ class NoteController extends Controller
      */
     public function index()
     {
-        $notes = Auth::user()
-            ->notes()
-            ->latest()
-            ->get();
+        $search = request('search');
 
+        $notes = Auth::user()
+        ->notes()
+        ->when($search, function ($query, $search) {
+
+            $query->where(function ($query) use ($search) {
+                $query
+                    ->where('title', 'like', "%{$search}%")
+                    ->orWhere('body', 'like', "%{$search}%");
+            });
+        })
+        ->latest()
+        ->paginate(10)
+        ->withQueryString();;
         // dd($notes);
 
         return view('notes.index', [
