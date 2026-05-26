@@ -7,5 +7,13 @@
         <p class="text-white">
             {{ $note->body }}
         </p>
+
+        <div class="space-x-2 mt-4">
+            @foreach ($note->tags as $tag)
+                <span class="bg-gray-200 px-2 py-1 rounded text-sm">
+                    {{ $tag->name }}
+                </span>
+            @endforeach
+        </div>
     </div>
 </x-app-layout>

@@ -36,7 +36,7 @@
                 </div>
             @endforeach
 
-            <div class="mt-6 bg-gray-500 p-4">
+            <div class="mt-6 p-4">
                 {{ $notes->links() }}
             </div>
         @else

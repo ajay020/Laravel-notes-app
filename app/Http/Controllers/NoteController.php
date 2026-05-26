@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Note;
+use App\Models\Tag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -16,22 +17,21 @@ class NoteController extends Controller
         $search = request('search');
 
         $notes = Auth::user()
-        ->notes()
-        ->when($search, function ($query, $search) {
+            ->notes()
+            ->when($search, function ($query, $search) {
 
-            $query->where(function ($query) use ($search) {
-                $query
-                    ->where('title', 'like', "%{$search}%")
-                    ->orWhere('body', 'like', "%{$search}%");
-            });
-        })
-        ->latest()
-        ->paginate(10)
-        ->withQueryString();;
-        // dd($notes);
+                $query->where(function ($query) use ($search) {
+                    $query
+                        ->where('title', 'like', "%{$search}%")
+                        ->orWhere('body', 'like', "%{$search}%");
+                });
+            })
+            ->latest()
+            ->paginate(10)
+            ->withQueryString();
 
         return view('notes.index', [
-            'notes' => $notes
+            'notes' => $notes,
         ]);
     }
 
@@ -50,11 +50,29 @@ class NoteController extends Controller
     {
         $validated = $request->validate([
             'title' => ['required', 'max:255'],
-            'body' => ['required']
+            'body' => ['required'],
+            'tags' => ['nullable'],
         ]);
 
-        Auth::user()->notes()->create($validated);
-        // auth()->user()->notes()->create($validated);
+        $note = Auth::user()->notes()->create($validated);
+
+        if ($request->filled('tags')) {
+
+            $tagNames = explode(',', $request->tags);
+
+            $tagIds = [];
+
+            foreach ($tagNames as $tagName) {
+
+                $tag = Tag::firstOrCreate([
+                    'name' => trim($tagName),
+                ]);
+
+                $tagIds[] = $tag->id;
+            }
+
+            $note->tags()->attach($tagIds);
+        }
 
         return redirect('/notes');
     }
@@ -65,7 +83,7 @@ class NoteController extends Controller
     public function show(Note $note)
     {
         return view('notes.show', [
-            'note' => $note
+            'note' => $note,
         ]);
     }
 
@@ -75,7 +93,7 @@ class NoteController extends Controller
     public function edit(Note $note)
     {
         return view('notes.edit', [
-            'note' => $note
+            'note' => $note,
         ]);
     }
 
@@ -88,10 +106,32 @@ class NoteController extends Controller
 
         $validated = $request->validate([
             'title' => ['required', 'max:255'],
-            'body' => ['required']
+            'body' => ['required'],
+            'tags' => ['nullable'],
         ]);
 
-        $note->update($validated);
+        $note->update([
+            'title' => $validated['title'],
+            'body' => $validated['body'],
+        ]);
+
+        $tagIds = [];
+
+        if ($request->filled('tags')) {
+
+            $tagNames = explode(',', $request->tags);
+
+            foreach ($tagNames as $tagName) {
+
+                $tag = Tag::firstOrCreate([
+                    'name' => trim($tagName),
+                ]);
+
+                $tagIds[] = $tag->id;
+            }
+        }
+
+        $note->tags()->sync($tagIds);
 
         return redirect('/notes');
     }
@@ -103,7 +143,8 @@ class NoteController extends Controller
     {
         abort_if($note->user_id !== Auth::id(), 403);
 
-        $note->delete($note->id);
+        // use destroy with the model id to ensure the deletion receives the expected argument
+        Note::destroy($note->id);
 
         return redirect('/notes');
     }

@@ -20,11 +20,10 @@ class DatabaseSeeder extends Seeder
         User::factory()->create([
             'name' => 'Bob',
             'email' => 'bob@example.com',
-            'password' => "12345678"
+            'password' => '12345678',
         ]);
 
         $this->call(NoteSeeder::class);
 
-       
     }
 }
