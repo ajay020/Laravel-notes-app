@@ -82,7 +82,8 @@ class NoteController extends Controller
             $note->tags()->attach($tagIds);
         }
 
-        return redirect('/notes');
+        return redirect('/notes')
+        ->with('success', 'Note created successfully!');
     }
 
     /**
@@ -141,7 +142,8 @@ class NoteController extends Controller
 
         $note->tags()->sync($tagIds);
 
-        return redirect('/notes');
+        return redirect('/notes')
+        ->with('success', 'Note updated successfully!');
     }
 
     /**
@@ -154,6 +156,7 @@ class NoteController extends Controller
         // use destroy with the model id to ensure the deletion receives the expected argument
         Note::destroy($note->id);
 
-        return redirect('/notes');
+        return redirect('/notes')
+        ->with('success', 'Note deleted successfully!');
     }
 }

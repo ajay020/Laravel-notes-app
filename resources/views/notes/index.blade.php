@@ -5,7 +5,7 @@
             <input type="text" name="search" value="{{ request('search') }}" placeholder="Search notes..."
                 class="w-full border rounded-lg px-4 py-2 dark:bg-gray-900 text-white">
         </form>
-        
+
         @if (request('tag'))
             <div class="mb-4 text-white">
 
@@ -21,7 +21,7 @@
 
         @if ($notes->count())
             @foreach ($notes as $note)
-                <div class="border max-w-2xl mx-auto rounded-lg p-4 my-4 text-white">
+                <div class="border max-w-2xl mx-auto rounded-lg p-4 my-4 text-white group">
                     <a href="/notes/{{ $note->id }}" class="text-blue-500 hover:underline">
                         <h2 class="text-xl font-bold mb-2">
                             {{ $note->title }}
@@ -32,7 +32,7 @@
                         {{ $note->body }}
                     </p>
 
-                    <div class="mt-4 space-x-4">
+                    <div class="mt-4 space-x-4 opacity-0 group-hover:opacity-100 transition-opacity duration-800">
                         <a href="/notes/{{ $note->id }}/edit" class="bg-gray-700 text-white px-3 py-1 rounded-lg">
                             Edit
                         </a>
@@ -53,7 +53,9 @@
                 {{ $notes->links() }}
             </div>
         @else
-            <p class="text-white">No notes found.</p>
+            <p class="text-white text-center mt-12">
+                Create your first note to get started!
+            </p>
         @endif
     </div>
 
