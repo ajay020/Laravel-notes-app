@@ -83,7 +83,9 @@ class NoteController extends Controller
         }
 
         return redirect('/notes')
-        ->with('success', 'Note created successfully!');
+        ->with('success', 'Note created successfully!')
+        ->with('error', 'Something went wrong while creating the note. Please try again.')
+        ;
     }
 
     /**
@@ -143,7 +145,9 @@ class NoteController extends Controller
         $note->tags()->sync($tagIds);
 
         return redirect('/notes')
-        ->with('success', 'Note updated successfully!');
+        ->with('success', 'Note updated successfully!')
+        ->with('error', 'Something went wrong while updating the note. Please try again.')
+        ;
     }
 
     /**
@@ -157,6 +161,7 @@ class NoteController extends Controller
         Note::destroy($note->id);
 
         return redirect('/notes')
-        ->with('success', 'Note deleted successfully!');
+        ->with('success', 'Note deleted successfully!')
+        ->with('error', 'Something went wrong while deleting the note. Please try again.');
     }
 }
