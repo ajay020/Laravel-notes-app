@@ -5,8 +5,21 @@
             <input type="text" name="search" value="{{ request('search') }}" placeholder="Search notes..."
                 class="w-full border rounded-lg px-4 py-2 dark:bg-gray-900 text-white">
         </form>
+        
+        @if (request('tag'))
+            <div class="mb-4 text-white">
 
-        @if ($notes ->count())
+                Filtering by tag:
+                <strong>{{ request('tag') }}</strong>
+
+                <a href="/notes" class="text-red-500 ml-2">
+                    Clear
+                </a>
+
+            </div>
+        @endif
+
+        @if ($notes->count())
             @foreach ($notes as $note)
                 <div class="border max-w-2xl mx-auto rounded-lg p-4 my-4 text-white">
                     <a href="/notes/{{ $note->id }}" class="text-blue-500 hover:underline">

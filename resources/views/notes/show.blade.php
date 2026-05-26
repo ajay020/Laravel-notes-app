@@ -10,9 +10,9 @@
 
         <div class="space-x-2 mt-4">
             @foreach ($note->tags as $tag)
-                <span class="bg-gray-200 px-2 py-1 rounded text-sm">
+                <a href="/notes?tag={{ $tag->name }}" class="bg-gray-200 px-2 py-1 rounded text-sm">
                     {{ $tag->name }}
-                </span>
+                </a>
             @endforeach
         </div>
     </div>

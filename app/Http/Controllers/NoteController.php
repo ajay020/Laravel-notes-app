@@ -15,6 +15,7 @@ class NoteController extends Controller
     public function index()
     {
         $search = request('search');
+        $tag = request('tag');
 
         $notes = Auth::user()
             ->notes()
@@ -24,6 +25,13 @@ class NoteController extends Controller
                     $query
                         ->where('title', 'like', "%{$search}%")
                         ->orWhere('body', 'like', "%{$search}%");
+                });
+            })
+            ->when($tag, function ($query, $tag) {
+                
+                $query->whereHas('tags', function ($query) use ($tag) {
+
+                    $query->where('name', $tag);
                 });
             })
             ->latest()
