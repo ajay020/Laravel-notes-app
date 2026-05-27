@@ -29,7 +29,7 @@ class NoteController extends Controller
                 });
             })
             ->when($tag, function ($query, $tag) {
-                
+
                 $query->whereHas('tags', function ($query) use ($tag) {
 
                     $query->where('name', $tag);
@@ -58,33 +58,33 @@ class NoteController extends Controller
     public function store(StoreNoteRequest $request)
     {
         try {
-                $validated = $request->validated();
+            $validated = $request->validated();
 
-                $note = Auth::user()->notes()->create($validated);
+            $note = Auth::user()->notes()->create($validated);
 
-                if ($request->filled('tags')) {
+            if ($request->filled('tags')) {
 
-                    $tagNames = explode(',', $request->tags);
+                $tagNames = explode(',', $request->tags);
 
-                    $tagIds = [];
+                $tagIds = [];
 
-                    foreach ($tagNames as $tagName) {
+                foreach ($tagNames as $tagName) {
 
-                        $tag = Tag::firstOrCreate([
-                            'name' => trim($tagName),
-                        ]);
+                    $tag = Tag::firstOrCreate([
+                        'name' => trim($tagName),
+                    ]);
 
-                        $tagIds[] = $tag->id;
-                    }
-
-                    $note->tags()->attach($tagIds);
+                    $tagIds[] = $tag->id;
                 }
 
-                return redirect('/notes')
-                    ->with('success', 'Note created successfully!');
+                $note->tags()->attach($tagIds);
+            }
+
+            return redirect('/notes')
+                ->with('success', 'Note created successfully!');
         } catch (\Exception $e) {
-                return redirect('/notes')
-                   ->with('error', 'Something went wrong.');
+            return redirect('/notes')
+                ->with('error', 'Something went wrong.');
         }
     }
 
@@ -93,6 +93,9 @@ class NoteController extends Controller
      */
     public function show(Note $note)
     {
+        // Authorization check using the NotePolicy`s view method
+        $this->authorize('view', $note);
+
         return view('notes.show', [
             'note' => $note,
         ]);
@@ -103,6 +106,9 @@ class NoteController extends Controller
      */
     public function edit(Note $note)
     {
+        // Authorization check using the NotePolicy`s update method
+        $this->authorize('update', $note);
+
         return view('notes.edit', [
             'note' => $note,
         ]);
@@ -113,7 +119,9 @@ class NoteController extends Controller
      */
     public function update(UpdateNoteRequest $request, Note $note)
     {
-        try{
+        try {
+
+            $this->authorize('update', $note);
 
             $validated = $request->validated();
 
@@ -141,7 +149,7 @@ class NoteController extends Controller
             $note->tags()->sync($tagIds);
 
             return redirect('/notes')
-            ->with('success', 'Note updated successfully!');
+                ->with('success', 'Note updated successfully!');
 
         } catch (\Exception $e) {
             return redirect('/notes')
@@ -154,7 +162,7 @@ class NoteController extends Controller
      */
     public function destroy(Note $note)
     {
-        abort_if($note->user_id !== Auth::id(), 403);
+        $this->authorize('delete', $note);
 
         try {
             $note->tags()->detach();

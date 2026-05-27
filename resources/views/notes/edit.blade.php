@@ -48,9 +48,12 @@
                 @enderror
             </div>
 
-            <button type="submit" class="bg-black text-white px-5 py-2 rounded-lg">
-                Update Note
-            </button>
+            @can('update', $note)
+                <button type="submit" class="bg-black text-white px-5 py-2 rounded-lg">
+                    Update Note
+                </button>
+            @endcan
+           
         </form>
     </div>
 </x-app-layout>

@@ -13,7 +13,7 @@ class UpdateNoteRequest extends FormRequest
      */
     public function authorize(): bool
     {
-         return $this->note->user_id === Auth::id();
+        return $this->note->user_id === Auth::id();
     }
 
     /**
@@ -26,7 +26,7 @@ class UpdateNoteRequest extends FormRequest
         return [
             'title' => ['required', 'max:255'],
             'body' => ['required'],
-            'tags' => ['nullable']
+            'tags' => ['nullable'],
         ];
     }
 }

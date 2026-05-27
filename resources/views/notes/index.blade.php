@@ -41,9 +41,11 @@
                             @csrf
                             @method('DELETE')
 
-                            <button type="submit" class="bg-red-500 text-white px-3 py-1 rounded-lg">
-                                Delete
-                            </button>
+                            @can('delete', $note)
+                                <button type="submit" class="bg-red-500 text-white px-3 py-1 rounded-lg">
+                                    Delete
+                                </button>
+                            @endcan
                         </form>
                     </div>
                 </div>
