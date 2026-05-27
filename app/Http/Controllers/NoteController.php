@@ -6,7 +6,6 @@ use App\Http\Requests\StoreNoteRequest;
 use App\Http\Requests\UpdateNoteRequest;
 use App\Models\Note;
 use App\Models\Tag;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class NoteController extends Controller
@@ -58,31 +57,35 @@ class NoteController extends Controller
      */
     public function store(StoreNoteRequest $request)
     {
-        $validated = $request->validated();
+        try {
+                $validated = $request->validated();
 
-        $note = Auth::user()->notes()->create($validated);
+                $note = Auth::user()->notes()->create($validated);
 
-        if ($request->filled('tags')) {
+                if ($request->filled('tags')) {
 
-            $tagNames = explode(',', $request->tags);
+                    $tagNames = explode(',', $request->tags);
 
-            $tagIds = [];
+                    $tagIds = [];
 
-            foreach ($tagNames as $tagName) {
+                    foreach ($tagNames as $tagName) {
 
-                $tag = Tag::firstOrCreate([
-                    'name' => trim($tagName),
-                ]);
+                        $tag = Tag::firstOrCreate([
+                            'name' => trim($tagName),
+                        ]);
 
-                $tagIds[] = $tag->id;
-            }
+                        $tagIds[] = $tag->id;
+                    }
 
-            $note->tags()->attach($tagIds);
+                    $note->tags()->attach($tagIds);
+                }
+
+                return redirect('/notes')
+                    ->with('success', 'Note created successfully!');
+        } catch (\Exception $e) {
+                return redirect('/notes')
+                   ->with('error', 'Something went wrong.');
         }
-
-        return redirect('/notes')
-        ->with('success', 'Note created successfully!')
-        ->with('error', 'Something went wrong while creating the note. Please try again.');
     }
 
     /**
@@ -110,35 +113,40 @@ class NoteController extends Controller
      */
     public function update(UpdateNoteRequest $request, Note $note)
     {
-        $validated = $request->validated();
+        try{
 
-        $note->update([
-            'title' => $validated['title'],
-            'body' => $validated['body'],
-        ]);
+            $validated = $request->validated();
 
-        $tagIds = [];
+            $note->update([
+                'title' => $validated['title'],
+                'body' => $validated['body'],
+            ]);
 
-        if ($request->filled('tags')) {
+            $tagIds = [];
 
-            $tagNames = explode(',', $request->tags);
+            if ($request->filled('tags')) {
 
-            foreach ($tagNames as $tagName) {
+                $tagNames = explode(',', $request->tags);
 
-                $tag = Tag::firstOrCreate([
-                    'name' => trim($tagName),
-                ]);
+                foreach ($tagNames as $tagName) {
 
-                $tagIds[] = $tag->id;
+                    $tag = Tag::firstOrCreate([
+                        'name' => trim($tagName),
+                    ]);
+
+                    $tagIds[] = $tag->id;
+                }
             }
+
+            $note->tags()->sync($tagIds);
+
+            return redirect('/notes')
+            ->with('success', 'Note updated successfully!');
+
+        } catch (\Exception $e) {
+            return redirect('/notes')
+                ->with('error', 'Something went wrong while updating the note. Please try again.');
         }
-
-        $note->tags()->sync($tagIds);
-
-        return redirect('/notes')
-        ->with('success', 'Note updated successfully!')
-        ->with('error', 'Something went wrong while updating the note. Please try again.')
-        ;
     }
 
     /**
@@ -148,11 +156,15 @@ class NoteController extends Controller
     {
         abort_if($note->user_id !== Auth::id(), 403);
 
-        // use destroy with the model id to ensure the deletion receives the expected argument
-        Note::destroy($note->id);
+        try {
+            $note->tags()->detach();
+            Note::destroy($note->id);
 
-        return redirect('/notes')
-        ->with('success', 'Note deleted successfully!')
-        ->with('error', 'Something went wrong while deleting the note. Please try again.');
+            return redirect('/notes')
+                ->with('success', 'Note deleted successfully!');
+        } catch (\Exception $e) {
+            return redirect('/notes')
+                ->with('error', 'Something went wrong while deleting the note. Please try again.');
+        }
     }
 }
