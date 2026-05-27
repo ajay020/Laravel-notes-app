@@ -8,7 +8,7 @@
             @csrf
 
             <div>
-                <label for="title" class="block mb-2 font-medium">
+                <label for="title" class="block mb-2 dark:text-white font-medium">
                     Title
                 </label>
 
@@ -23,7 +23,7 @@
             </div>
 
             <div>
-                <label for="body" class="block mb-2 font-medium">
+                <label for="body" class="block mb-2 dark:text-white font-medium">
                     Body
                 </label>
 
@@ -39,7 +39,7 @@
 
             {{-- Tags are optional, but they can help you organize your notes. You can add multiple tags by separating them with commas. --}}
             <div>
-                <label for="tags">
+                <label for="tags" class="block mb-2 dark:text-white font-medium">
                     Tags
                 </label>
 
