@@ -35,6 +35,7 @@ class NoteController extends Controller
                     $query->where('name', $tag);
                 });
             })
+            ->orderByDesc('is_pinned')
             ->latest()
             ->paginate(10)
             ->withQueryString();
@@ -174,5 +175,18 @@ class NoteController extends Controller
             return redirect('/notes')
                 ->with('error', 'Something went wrong while deleting the note. Please try again.');
         }
+    }
+
+
+    public function togglePin(Note $note)
+    {
+        $this->authorize('update', $note);
+
+        $note->update([
+            'is_pinned' => ! $note->is_pinned
+        ]);
+
+        return redirect('/notes')
+            ->with('success', 'Note updated.');
     }
 }

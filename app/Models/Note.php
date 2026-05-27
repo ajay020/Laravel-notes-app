@@ -35,7 +35,7 @@ class Note extends Model
     protected $fillable = [
         'title',
         'body',
-
+        'is_pinned',
     ];
 
     public function user()
