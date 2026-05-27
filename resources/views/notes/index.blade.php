@@ -1,12 +1,21 @@
 <x-app-layout>
-    <div class="mx-auto p-4  max-w-2xl">
+
+    <div class="mx-auto p-4 max-w-2xl">
 
         <form action="/notes" method="GET" class="mb-6">
-            <input type="text" name="search" value="{{ request('search') }}" placeholder="Search notes..."
-                class="w-full border rounded-lg px-4 py-2 dark:bg-gray-900 text-white">
+
+            <input
+                type="text"
+                name="search"
+                value="{{ request('search') }}"
+                placeholder="Search notes..."
+                class="w-full border rounded-lg px-4 py-2 dark:bg-gray-900 text-white"
+            >
+
         </form>
 
         @if (request('tag'))
+
             <div class="mb-4 text-white">
 
                 Filtering by tag:
@@ -17,67 +26,25 @@
                 </a>
 
             </div>
+
         @endif
 
-        @if ($notes->count())
-            @foreach ($notes as $note)
-                <div class="border max-w-2xl mx-auto rounded-lg p-4 my-4 text-white group">
+        @forelse ($notes as $note)
 
-                    @if ($note->is_pinned)
-                        📌
-                    @endif
+            <x-note-card :note="$note" />
 
-                    <a href="/notes/{{ $note->id }}" class="text-blue-500 hover:underline">
-                        <h2 class="text-xl font-bold mb-2">
-                            {{ $note->title }}
-                        </h2>
-                    </a>
+        @empty
 
-                    <p>
-                        {{ $note->body }}
-                    </p>
-
-                    <div class="mt-4 flex  space-x-4 opacity-0 group-hover:opacity-100 transition-opacity duration-800">
-                        <a href="/notes/{{ $note->id }}/edit" class="bg-gray-700 text-white px-3 py-1 rounded-lg">
-                            Edit
-                        </a>
-
-                        <form action="/notes/{{ $note->id }}" method="POST" class="inline-block">
-                            @csrf
-                            @method('DELETE')
-
-                            @can('delete', $note)
-                                <button type="submit" class="bg-red-500 text-white px-3 py-1 rounded-lg">
-                                    Delete
-                                </button>
-                            @endcan
-                        </form>
-
-                        <form
-                            action="{{ route('notes.pin', $note) }}"
-                            method="POST"
-                        >
-                            @csrf
-                            @method('PATCH')
-
-                            <button type="submit" class="bg-gray-500 text-white px-3 py-1 rounded-lg">
-
-                                {{ $note->is_pinned ? 'Unpin' : 'Pin' }}
-
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            @endforeach
-
-            <div class="mt-6 p-4">
-                {{ $notes->links() }}
-            </div>
-        @else
             <p class="text-white text-center mt-12">
                 Create your first note to get started!
             </p>
-        @endif
+
+        @endforelse
+
+        <div class="mt-6 p-4">
+            {{ $notes->links() }}
+        </div>
+
     </div>
 
 </x-app-layout>
