@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreNoteRequest;
+use App\Http\Requests\UpdateNoteRequest;
 use App\Models\Note;
 use App\Models\Tag;
 use Illuminate\Http\Request;
@@ -54,13 +56,9 @@ class NoteController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreNoteRequest $request)
     {
-        $validated = $request->validate([
-            'title' => ['required', 'max:255'],
-            'body' => ['required'],
-            'tags' => ['nullable'],
-        ]);
+        $validated = $request->validated();
 
         $note = Auth::user()->notes()->create($validated);
 
@@ -84,8 +82,7 @@ class NoteController extends Controller
 
         return redirect('/notes')
         ->with('success', 'Note created successfully!')
-        ->with('error', 'Something went wrong while creating the note. Please try again.')
-        ;
+        ->with('error', 'Something went wrong while creating the note. Please try again.');
     }
 
     /**
@@ -111,15 +108,9 @@ class NoteController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Note $note)
+    public function update(UpdateNoteRequest $request, Note $note)
     {
-        abort_if($note->user_id !== Auth::id(), 403);
-
-        $validated = $request->validate([
-            'title' => ['required', 'max:255'],
-            'body' => ['required'],
-            'tags' => ['nullable'],
-        ]);
+        $validated = $request->validated();
 
         $note->update([
             'title' => $validated['title'],
