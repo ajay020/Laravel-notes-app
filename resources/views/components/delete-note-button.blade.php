@@ -3,7 +3,7 @@
 @can('delete', $note)
 
     <form
-        action="/notes/{{ $note->id }}"
+        action="{{ route( 'notes.destroy', $note ) }}"
         method="POST"
         class="inline-block"
     >

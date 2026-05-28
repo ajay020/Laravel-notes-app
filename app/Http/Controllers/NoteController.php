@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateNoteRequest;
 use App\Models\Note;
 use App\Models\Tag;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class NoteController extends Controller
 {
@@ -61,6 +62,8 @@ class NoteController extends Controller
         try {
             $validated = $request->validated();
 
+            $validated['slug'] = Str::slug($validated['title']) . '-' . uniqid();
+
             $note = Auth::user()->notes()->create($validated);
 
             if ($request->filled('tags')) {
@@ -83,9 +86,10 @@ class NoteController extends Controller
 
             return redirect('/notes')
                 ->with('success', 'Note created successfully!');
+
         } catch (\Exception $e) {
             return redirect('/notes')
-                ->with('error', 'Something went wrong.');
+                ->with('error', 'Something went wrong.' . $e->getMessage());
         }
     }
 

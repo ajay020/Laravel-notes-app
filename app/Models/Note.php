@@ -36,6 +36,7 @@ class Note extends Model
         'title',
         'body',
         'is_pinned',
+        'slug',
     ];
 
     public function user()
@@ -46,5 +47,10 @@ class Note extends Model
     public function tags()
     {
         return $this->belongsToMany(Tag::class);
+    }
+
+    public function getRouteKeyName()
+    {
+        return 'slug';
     }
 }
