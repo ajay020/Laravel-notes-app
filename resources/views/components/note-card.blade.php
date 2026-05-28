@@ -6,7 +6,7 @@
         📌
     @endif
 
-    <a href="/notes/{{ $note->id }}" class="text-blue-500 hover:underline">
+    <a href="{{ route( 'notes.show', $note )}}" class="text-blue-500 hover:underline">
         <h2 class="text-xl font-bold mb-2">
             {{ $note->title }}
         </h2>
@@ -19,7 +19,8 @@
     <div class="mt-4 flex space-x-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
 
         <a
-            href="/notes/{{ $note->id }}/edit"
+            {{-- href="/notes/{{ $note->id }}/edit" --}}
+            href = {{  route( 'notes.edit', $note) }}
             class="bg-gray-700 text-white px-3 py-1 rounded-lg"
         >
             Edit

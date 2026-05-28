@@ -37,7 +37,7 @@
                 @enderror
             </div>
 
-            {{-- Tags are optional, but they can help you organize your notes. You can add multiple tags by separating them with commas. --}}
+            {{-- Tags are optional, but they can help you organize your notes. --}}
             <div>
                 <label for="tags" class="block mb-2 dark:text-white font-medium">
                     Tags
