@@ -14,7 +14,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body class="bg-gray-950 text-white min-h-screen flex items-center justify-center">
+<body class="bg-white text-black dark:bg-gray-950 dark:text-white min-h-screen flex items-center justify-center">
 
     <div class="text-center max-w-2xl px-6">
 

@@ -1,6 +1,6 @@
 @props(['note'])
 
-<div class="border max-w-2xl mx-auto rounded-lg p-4 my-4 text-white group">
+<div class=" max-w-2xl bg-gray-800 mx-auto rounded-lg p-4 my-4 text-white group">
 
     @if ($note->is_pinned)
         📌
